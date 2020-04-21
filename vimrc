@@ -18,7 +18,6 @@ endif
 
 " ========= Options ========
 
-compiler ruby
 syntax on
 set noshowmode
 set hlsearch
@@ -42,26 +41,19 @@ set ttymouse=
 set backupcopy=yes " Setting backup copy preserves file inodes, which are needed for Docker file mounting
 set signcolumn=yes
 set complete-=t " Don't use tags for autocomplete
-
-if version >= 703
-  set undodir=~/.vim/undodir
-  set undofile
-  set undoreload=10000 "maximum number lines to save for undo on a buffer reload
-endif
+set undodir=~/.vim/undodir
+set undofile
+set undoreload=10000 "maximum number lines to save for undo on a buffer reload
 set undolevels=1000 "maximum number of changes that can be undone
 
 " Color
-colorscheme solarized
+colorscheme nord
 
 let g:lightline = { 'colorscheme': 'wombat', }
 
 augroup markdown
   au!
   au BufNewFile,BufRead *.md,*.markdown setlocal filetype=ghmarkdown
-augroup END
-augroup Drakefile
-  au!
-  au BufNewFile,BufRead Drakefile,drakefile setlocal filetype=ruby
 augroup END
 
 " File Types
@@ -77,10 +69,8 @@ autocmd BufNewFile,BufRead *.txt setlocal textwidth=78
 autocmd FileType ruby runtime ruby_mappings.vim
 autocmd FileType python runtime python_mappings.vim
 
-if version >= 700
-    autocmd BufNewFile,BufRead *.txt setlocal spell spelllang=en_us
-    autocmd FileType tex setlocal spell spelllang=en_us
-endif
+autocmd BufNewFile,BufRead *.txt setlocal spell spelllang=en_us
+autocmd FileType tex setlocal spell spelllang=en_us
 
 " Highlight trailing whitespace
 autocmd InsertEnter * match ExtraWhitespace /\s\+\%#\@<!$/
@@ -115,20 +105,7 @@ set statusline+=%P                        " percentage of file
 let g:AckAllFiles = 0
 let g:AckCmd = 'ack --type-add ruby=.feature --ignore-dir=tmp 2> /dev/null'
 
-" Side Search {{{
-let g:side_search_prg = 'ack-grep --word-regexp'
-       \. " --heading -C 2 --group"
-let g:side_search_splitter = 'vnew'
-let g:side_search_split_pct = 0.4
-
-" SideSearch current word and return to original window
-nnoremap <Leader>ss :SideSearch <C-r><C-w><CR> | wincmd p
-
-" SS shortcut and return to original window
- command! -complete=file -nargs=+ SS execute 'SideSearch <args>'
-" }}}
-
-let g:ale_enabled = 0                     " Disable linting by default
+let g:ale_enabled = 1                     " Disable linting by default
 let g:ale_lint_on_text_changed = 'normal' " Only lint while in normal mode
 let g:ale_lint_on_insert_leave = 1        " Automatically lint when leaving insert mode
 
@@ -143,12 +120,7 @@ let html_no_pre=1
 let g:gist_clip_command = 'pbcopy'
 let g:gist_detect_filetype = 1
 
-let g:rubycomplete_buffer_loading = 1
-let g:ruby_indent_assignment_style = 'variable'
-
 let g:no_html_toolbar = 'yes'
-
-let coffee_no_trailing_space_error = 1
 
 let NERDTreeIgnore=['\.pyc$', '\.o$', '\.class$', '\.lo$']
 let NERDTreeHijackNetrw = 0
@@ -157,23 +129,12 @@ let g:netrw_banner = 0
 
 let g:VimuxUseNearestPane = 1
 
-let g:rails_projections = {
-      \   "script/*.rb": { 
-      \     "test": "spec/script/{}_spec.rb"
-      \   },
-      \   "spec/script/*_spec.rb": {
-      \     "alternate": "script/{}.rb"
-      \   }
-      \ }
-
 if exists(':RainbowParenthesesToggle')
   autocmd VimEnter *       RainbowParenthesesToggle
   autocmd Syntax   clojure RainbowParenthesesLoadRound
   autocmd Syntax   clojure RainbowParenthesesLoadSquare
   autocmd Syntax   clojure RainbowParenthesesLoadBraces
 endif
-
-let g:puppet_align_hashes = 0
 
 let $FZF_DEFAULT_COMMAND = 'find * -type f 2>/dev/null | grep -v -E "deps/|_build/|node_modules/|vendor/|build_intellij/"' 
 let $FZF_DEFAULT_OPTS = '--reverse'
@@ -222,11 +183,6 @@ nmap <silent> <LocalLeader>vs vip<LocalLeader>vs<CR>
 map <silent> <LocalLeader>ds :call VimuxRunCommand('clear; grep -E "^ *describe[ \(]\|^ *context[ \(]\|^ *it[ \(]" ' . bufname("%"))<CR>
 
 map <silent> <LocalLeader>rt :!ctags -R --exclude=".git\|.svn\|log\|tmp\|db\|pkg" --extra=+f --langmap=Lisp:+.clj<CR>
-
-map <silent> <LocalLeader>cj :!clj %<CR>
-
-map <silent> <LocalLeader>gd :e product_diff.diff<CR>:%!git diff<CR>:setlocal buftype=nowrite<CR>
-map <silent> <LocalLeader>pd :e product_diff.diff<CR>:%!svn diff<CR>:setlocal buftype=nowrite<CR>
 
 map <silent> <LocalLeader>nh :nohls<CR>
 
